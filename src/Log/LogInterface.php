@@ -6,7 +6,7 @@
  * Time: 13:27
  */
 
-namespace Log
+namespace Log;
 
 interface LogInterface
 {

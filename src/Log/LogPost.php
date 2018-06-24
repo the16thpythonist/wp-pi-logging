@@ -8,7 +8,7 @@
 
 namespace Log;
 
-use Log\LogInterface\LogInterface;
+use Log\LogInterface;
 
 class LogPost implements LogInterface
 {
