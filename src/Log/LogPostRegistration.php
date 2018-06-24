@@ -6,7 +6,7 @@
  * Time: 15:33
  */
 
-namespace Log\LogInterface;
+namespace Log;
 
 
 class LogPostRegistration
