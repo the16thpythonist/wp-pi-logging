@@ -49,7 +49,7 @@ class LogPostRegistration
         );
     }
 
-    private function register_post_type()
+    public function register_post_type()
     {
         $args = array(
             'label'                 => $this->label,
