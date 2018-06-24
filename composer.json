@@ -1,5 +1,5 @@
 {
-  "name":"wp-pi-logging",
+  "name":"the16thpythonist/wp-pi-logging",
   "description":"logging facilities for wordpress",
   "type":"library",
   "autoload": {
