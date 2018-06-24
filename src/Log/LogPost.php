@@ -27,7 +27,7 @@ class LogPost implements LogInterface
         $this->post_id = $post_id;
     }
 
-    public function start(): void
+    public function start()
     {
         $this->running = true;
         $starting_time = date(static::$DATETIME_FORMAT);
@@ -72,7 +72,7 @@ class LogPost implements LogInterface
         }
     }
 
-    public function stop(): void
+    public function stop()
     {
         if ($this->isFresh()) {
             throw new \BadMethodCallException('Cannot stop a newly created log, that is not running');
@@ -97,7 +97,7 @@ class LogPost implements LogInterface
         }
     }
 
-    public function load(): void
+    public function load()
     {
         /*
          *
@@ -181,7 +181,7 @@ class LogPost implements LogInterface
         $this->log('warning', $message);
     }
 
-    public static function register(string $post_type): void
+    public static function register(string $post_type)
     {
         /*
          * Here the static member of the class, which will define and be used as the name of the post type throughout

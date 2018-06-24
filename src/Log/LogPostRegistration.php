@@ -49,7 +49,7 @@ class LogPostRegistration
         );
     }
 
-    private function register_post_type(): void
+    private function register_post_type()
     {
         $args = array(
             'label'                 => $this->label,
@@ -80,7 +80,7 @@ class LogPostRegistration
         );
     }
 
-    public function register_data_taxonomy(): void
+    public function register_data_taxonomy()
     {
         $args = array(
             'description'           => 'This taxonomy is affiliated with a log CPT and it will actually store all the 
