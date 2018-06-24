@@ -1,4 +1,7 @@
 {
+  "name":"wp-pi-logging",
+  "description":"logging facilities for wordpress",
+  "type":"library",
   "autoload": {
     "psr-4": {
       "Log\\": "src/Log"
