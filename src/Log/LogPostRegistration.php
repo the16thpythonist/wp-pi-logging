@@ -19,8 +19,38 @@ class LogPostRegistration
         $this->label = $label;
     }
 
+    /**
+     * CHANGELOG
+     *
+     * Changed 24.06.2018 - 0.0.0.0
+     *
+     * Previously the 'register_post_type' and 'register_taxonomy' functions were directly called in this methid, which
+     * is obviously not possible. Those calls have been moved to methods and these methods were hooked into the
+     * wordpress init instead
+     *
+     */
     public function register() {
         // Register the actual post type with wordpress
+        add_action(
+            'init',
+            array(
+                $this,
+                'register_post_type'
+            )
+        );
+
+        // Register the taxonomy
+        add_action(
+            'init',
+            array(
+                $this,
+                'register_data_taxonomy'
+            )
+        );
+    }
+
+    private function register_post_type(): void
+    {
         $args = array(
             'label'                 => $this->label,
             'description'           => 'This post type describes a "Log" data model. The logs contain information about 
@@ -48,8 +78,10 @@ class LogPostRegistration
             $this->post_type,
             $args
         );
+    }
 
-        // Register the taxonomy
+    public function register_data_taxonomy(): void
+    {
         $args = array(
             'description'           => 'This taxonomy is affiliated with a log CPT and it will actually store all the 
                                         lines ever written to a log post as terms',
