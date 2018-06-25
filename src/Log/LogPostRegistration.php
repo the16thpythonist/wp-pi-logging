@@ -31,22 +31,12 @@ class LogPostRegistration
      */
     public function register() {
         // Register the actual post type with wordpress
-        add_action(
-            'init',
-            array(
-                $this,
-                'register_post_type'
-            )
-        );
+        add_action('init', array($this, 'register_post_type'));
 
         // Register the taxonomy
-        add_action(
-            'init',
-            array(
-                $this,
-                'register_data_taxonomy'
-            )
-        );
+        add_action('init', array($this, 'register_data_taxonomy'));
+
+        add_action('add_meta_boxes', array($this, 'register_meta_box'));
     }
 
     public function register_post_type()
@@ -83,6 +73,9 @@ class LogPostRegistration
     public function register_data_taxonomy()
     {
         $args = array(
+            'labels'                => array(
+                'name'      => 'Data',
+            ),
             'description'           => 'This taxonomy is affiliated with a log CPT and it will actually store all the 
                                         lines ever written to a log post as terms',
             'public'                => true,
@@ -93,6 +86,28 @@ class LogPostRegistration
             $args
         );
     }
+
+    public function register_meta_box() {
+        add_meta_box(
+            $this->post_type . '-meta',
+            'Log Data',
+            array($this, 'meta_box_callback'),
+            $this->post_type,
+            'normal',
+            'high'
+        );
+    }
+
+    public function meta_box_callback($post) { ?>
+        <div class="log-meta-wrapper">
+            <?php
+            $terms = wp_get_post_terms($post->ID, $this->getDataTaxonomy());
+            foreach ($terms as $term):
+            ?>
+                <p><?php echo $term->name; ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php }
 
     public function getDataTaxonomy(): string
     {

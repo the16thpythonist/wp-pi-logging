@@ -25,6 +25,9 @@ class LogPost implements LogInterface
     public function __construct($post_id = NULL)
     {
         $this->post_id = $post_id;
+        if (!$this->isFresh()) {
+            $this->load();
+        }
     }
 
     public function start()
@@ -33,7 +36,12 @@ class LogPost implements LogInterface
         $starting_time = date(static::$DATETIME_FORMAT);
 
         $postarr = array(
+            'post_type'         => $this->getPostType(),
             'post_date'         => $starting_time,
+            'post_author'       => 5,
+            'post_status'       => 'publish',
+            'post_title'        => 'test',
+            'post_content'      => 'test',
             'comment_status'    => 'closed',
             'meta_input'        => array(
                 'starting_time'     => $starting_time,
@@ -84,12 +92,14 @@ class LogPost implements LogInterface
                 // Calculating the new total time
                 $total_time = strtotime(date(static::$DATETIME_FORMAT)) - strtotime($this->starting_time);
                 $args = array(
+                    'ID'         => $this->post_id,
                     'meta_input' => array(
-                        'total_time' => ($old_total_time == '-' ? $total_time : $old_total_time + $total_time),
-                        'running'=> false
+                        'total_time'    => ($old_total_time == '-' ? $total_time : $old_total_time + $total_time),
+                        'running'       => false,
                     )
                 );
-                wp_update_post($args);
+                $post_id = wp_update_post($args);
+                var_dump($post_id);
 
             } else {
                 throw new \BadMethodCallException('Cannot stop a Log, that is not running');
@@ -120,7 +130,7 @@ class LogPost implements LogInterface
         }
     }
 
-    private function log(string $type, string $message): void
+    private function log(string $type, string $message)
     {
         if ($this->isRunning()) {
             // Assembling the actual message
@@ -130,7 +140,7 @@ class LogPost implements LogInterface
             // Adding the line to the local array
             $this->data[] = $content;
             // Actually saving it as a taxonomy term
-            wp_set_object_terms($this->post_id, $content, $this->getDataTaxonomy());
+            wp_set_object_terms($this->post_id, $content, $this->getDataTaxonomy(), true);
         } else {
             throw new \BadMethodCallException('Cannot log, if the log is not running!');
         }
