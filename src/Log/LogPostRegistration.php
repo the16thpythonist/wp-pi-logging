@@ -8,37 +8,71 @@
 
 namespace Log;
 
-
+/**
+ * Registers the log CPT with wordpress
+ *
+ * @see LogPost
+ *
+ * @author Jonas Teufel <jonseb1998@gmail.com>
+ *
+ * @package Log
+ * @since 0.0.0.0
+ */
 class LogPostRegistration
 {
     public $post_type;
     public $label;
 
+    /**
+     * LogPostRegistration constructor.
+     *
+     * CHANGELOG
+     *
+     * Added 24.06.2018
+     *
+     * @since 0.0.0.0
+     *
+     * @param string $post_type the name of the new post type to be registered with wordpress
+     * @param string $label     the label of this new post type, to be displayed int the admin dashboard section
+     */
     public function __construct(string $post_type, string $label='Log') {
         $this->post_type = $post_type;
         $this->label = $label;
     }
 
     /**
+     * Registers the log post type with wordpress
+     *
      * CHANGELOG
      *
      * Changed 24.06.2018 - 0.0.0.0
-     *
      * Previously the 'register_post_type' and 'register_taxonomy' functions were directly called in this methid, which
      * is obviously not possible. Those calls have been moved to methods and these methods were hooked into the
-     * wordpress init instead
+     * wordpress init instead.
+     *
+     * Changed 27.06.2018
+     * Removed the deprecated method 'register_taxonomy' from being registered with wordpress, as the log messages are
+     * no longer being stored as taxonomy terms.
+     *
+     * @since 0.0.0.0
      *
      */
     public function register() {
         // Register the actual post type with wordpress
         add_action('init', array($this, 'register_post_type'));
 
-        // Register the taxonomy
-        add_action('init', array($this, 'register_data_taxonomy'));
-
         add_action('add_meta_boxes', array($this, 'register_meta_box'));
     }
 
+    /**
+     * Registers the actual post type with wordpress
+     *
+     * CHANGELOG
+     *
+     * Added 24.06.2018
+     *
+     * @since 0.0.0.0
+     */
     public function register_post_type()
     {
         $args = array(
@@ -70,6 +104,18 @@ class LogPostRegistration
         );
     }
 
+    /**
+     * Registers the taxonomy to be used for storing the log messages with wordpress
+     *
+     * CHANGELOG
+     *
+     * Added 24.06.2018
+     *
+     * Deprecated 27.06.2018
+     *
+     * @since 0.0.0.0
+     * @deprecated 0.0.0.1
+     */
     public function register_data_taxonomy()
     {
         $args = array(
@@ -87,6 +133,15 @@ class LogPostRegistration
         );
     }
 
+    /**
+     * Registers the metabox for displaying the log messages with wordpress
+     *
+     * CHANGELOG
+     *
+     * Added 24.06.2018
+     *
+     * @since 0.0.0.0
+     */
     public function register_meta_box() {
         add_meta_box(
             $this->post_type . '-meta',
@@ -98,6 +153,15 @@ class LogPostRegistration
         );
     }
 
+    /**
+     * The callback to actually display the HTML code for the log post metabox
+     *
+     * CHANGELOG
+     *
+     * Added 24.06.2018
+     *
+     * @param WP_Post $post the post object for the post that is currently being edited
+     */
     public function meta_box_callback($post) { ?>
         <div class="log-meta-wrapper">
             <?php
