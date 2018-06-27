@@ -160,15 +160,24 @@ class LogPostRegistration
      *
      * Added 24.06.2018
      *
+     * Changed 27.06.2018
+     * Previously the log messages to be displayed were being fetched by getting all the custom taxonomy terms for
+     * for that post type, but since the log messages are now being stored in log meta, the log meta array will be
+     * used as log messages to display
+     *
+     * @see LogPostRegistration::getLog() returns all the log messages for the given log post
+     *
+     * @since 0.0.0.0
+     *
      * @param WP_Post $post the post object for the post that is currently being edited
      */
     public function meta_box_callback($post) { ?>
         <div class="log-meta-wrapper">
             <?php
-            $terms = wp_get_post_terms($post->ID, $this->getDataTaxonomy());
-            foreach ($terms as $term):
+            $log = $this->getLog($post);
+            foreach ($log as $message):
             ?>
-                <p><?php echo $term->name; ?></p>
+                <p><?php echo $message; ?></p>
             <?php endforeach; ?>
         </div>
     <?php }
@@ -176,6 +185,19 @@ class LogPostRegistration
     public function getDataTaxonomy(): string
     {
         return $this->post_type . '_data';
+    }
+
+    /**
+     * Returns the complete log message array for the given log post object
+     *
+     * @since 0.0.0.3
+     *
+     * @param WP_Post $post the log post object fro which to get the log messages
+     * @return array the array of log messages
+     */
+    private function getLog($post) {
+        $post_id = $post->ID;
+        return get_post_meta($post_id, 'data', false);
     }
 
 }
