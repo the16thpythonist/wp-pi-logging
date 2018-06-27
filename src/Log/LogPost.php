@@ -32,6 +32,12 @@ class LogPost implements LogInterface
     public $starting_time;
     public $total_time;
     public $data;
+    /**
+     * The subject of the log. Optional string to specify the title of the log post
+     * @var string
+     * @since 0.0.0.4
+     */
+    public $subject;
 
     /**
      * LogPost constructor.
@@ -40,10 +46,18 @@ class LogPost implements LogInterface
      *
      * Added 24.06.2018
      *
-     * @param int $post_id OPTIONAL if given a wordpress post id, this log post will be loaded and continued
+     * Changed 27.06.2018
+     * Added the parameter '$subject' to the constructor, which will be used to optionally specify a more descriptive
+     * title for the log post. Default will be 'log'.
+     *
+     * @param int $post_id      OPTIONAL if given a wordpress post id, this log post will be loaded and continued.
+     *                          Default is NULL, which means a new log will be created
+     * @param string $subject   OPTIONAL a more descriptive title for the log post to be created.
+     *                          Default is 'log'
      */
-    public function __construct($post_id = NULL)
+    public function __construct($post_id = NULL, string $subject='log')
     {
+        $this->subject = $subject;
         $this->post_id = $post_id;
         if (!$this->isFresh()) {
             $this->load();
@@ -61,6 +75,10 @@ class LogPost implements LogInterface
      *
      * Added 24.06.2018
      *
+     * Changed 27.06.2018
+     * Instead of using 'test' as title, the title string will be taken from the 'subject' field of the object, which
+     * is an optional parameter of the constructor of the class to be used exactly for this: to set the title.
+     *
      * @since 0.0.0.0
      *
      * @returns void
@@ -75,7 +93,7 @@ class LogPost implements LogInterface
             'post_date'         => $starting_time,
             'post_author'       => 5,
             'post_status'       => 'publish',
-            'post_title'        => 'test',
+            'post_title'        => $this->subject,
             'post_content'      => 'test',
             'comment_status'    => 'closed',
             'meta_input'        => array(

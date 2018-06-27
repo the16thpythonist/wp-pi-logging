@@ -71,6 +71,10 @@ class LogPostRegistration
      *
      * Added 24.06.2018
      *
+     * Changed 27.06.2018
+     * Removed the 'custom post meta' from the array of supported widgets in the edit screen within the admin area,
+     * because since the log messages are now being saved as post meta data, this widget will get really crowded.
+     *
      * @since 0.0.0.0
      */
     public function register_post_type()
@@ -94,7 +98,6 @@ class LogPostRegistration
             'supports'              => array(
                 'title',
                 'editor',
-                'custom-fields'
             )
 
         );

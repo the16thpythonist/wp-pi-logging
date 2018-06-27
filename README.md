@@ -26,3 +26,11 @@ array like structure of post meta instead of taxonomy terms.
 - Changed the way the log messages were being fetched to be displayed in the admin dashboard meta box from the 
 taxonomy terms to the post meta array
 
+# 0.0.0.4 - 27.06.2018
+
+- Removed the 'custom post meta' from the list of supported widgets in the edit screen within the admin 
+area, because since the log messages are now being stored as separate post meta elements, this widget would 
+become very crowded
+- Added an additional $subject parameter to the constructor of the LogPost class, so that a more descriptive 
+title for the log post can optionally be specified.
+
