@@ -75,6 +75,9 @@ class LogPostRegistration
      * Removed the 'custom post meta' from the array of supported widgets in the edit screen within the admin area,
      * because since the log messages are now being saved as post meta data, this widget will get really crowded.
      *
+     * Changed 28.06.2018
+     * Added the 'menu_icon' attribute for the post type registration.
+     *
      * @since 0.0.0.0
      */
     public function register_post_type()
@@ -90,6 +93,7 @@ class LogPostRegistration
             'show_in_menu'          => true,
             'show_in_nav_menus'     => false,
             'menu_position'         => 10,
+            'menu_icon'             => 'dashicons-book-alt',
             'taxonomies'            => array(
                 $this->getDataTaxonomy(),
             ),
