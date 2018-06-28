@@ -34,3 +34,8 @@ become very crowded
 - Added an additional $subject parameter to the constructor of the LogPost class, so that a more descriptive 
 title for the log post can optionally be specified.
 
+# 0.0.0.5 - 28.06.2018
+
+- Modified the log data meta box, that display the actual log to also display the line number in front of each line
+
+

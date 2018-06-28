@@ -168,6 +168,9 @@ class LogPostRegistration
      * for that post type, but since the log messages are now being stored in log meta, the log meta array will be
      * used as log messages to display
      *
+     * Changed 28.06.2018
+     * Added an additional span element before each message, which displays the line number
+     *
      * @see LogPostRegistration::getLog() returns all the log messages for the given log post
      *
      * @since 0.0.0.0
@@ -178,9 +181,11 @@ class LogPostRegistration
         <div class="log-meta-wrapper">
             <?php
             $log = $this->getLog($post);
+            $count = 0;
             foreach ($log as $message):
             ?>
-                <p><?php echo $message; ?></p>
+                <p><span style="color: dimgrey; font-size: 80%"><?php echo $count; ?></span><?php echo $message; ?></p>
+                <?php $count+= 1; ?>
             <?php endforeach; ?>
         </div>
     <?php }
