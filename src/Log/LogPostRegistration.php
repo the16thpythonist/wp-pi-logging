@@ -183,9 +183,8 @@ class LogPostRegistration
             $log = $this->getLog($post);
             $count = 0;
             foreach ($log as $message):
-            ?>
-                <?php $line = $count . str_repeat(' ', 5 - strlen(strval($count))); ?>
-                <p><span style="color: dimgrey; font-size: 80%"><?php echo $line; ?></span><?php echo $message; ?></p>
+                ?>
+                <p><span style="color: dimgrey; font-size: 80%; margin-right: 4px;"><?php echo $count; ?></span><?php echo $message; ?></p>
                 <?php $count+= 1; ?>
             <?php endforeach; ?>
         </div>
