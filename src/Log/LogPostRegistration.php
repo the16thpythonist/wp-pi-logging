@@ -184,7 +184,8 @@ class LogPostRegistration
             $count = 0;
             foreach ($log as $message):
             ?>
-                <p><span style="color: dimgrey; font-size: 80%"><?php echo $count; ?></span><?php echo $message; ?></p>
+                <?php $line = $count + ' ' * (5 - strlen(strval($count))); ?>
+                <p><span style="color: dimgrey; font-size: 80%"><?php echo $line; ?></span><?php echo $message; ?></p>
                 <?php $count+= 1; ?>
             <?php endforeach; ?>
         </div>
