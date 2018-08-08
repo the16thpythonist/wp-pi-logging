@@ -176,11 +176,11 @@ class LogPostRegistration
      * @since 0.0.0.7
      */
     public function ajax_new_logs() {
-        $count = $_GET['count'];
+        $count = (int) $_GET['count'];
         $post_id = $_GET['post'];
         // Getting all the log entries from the post
         $logs = get_post_meta($post_id, 'data', false);
-        $new_logs = array_slice($logs, $count, count($logs) - $count);
+        $new_logs = array_slice($logs, $count + 1, count($logs) - $count);
         echo json_encode($new_logs);
     }
 
@@ -223,39 +223,65 @@ class LogPostRegistration
             <?php endforeach; ?>
         </div>
         <script>
+            /**
+             * This function is used to generate the leading zeros for the line count
+             *
+             * @param count     the to which the zeros are supposed to be added
+             * @param length    the length that is to be achieved with the zeros
+             * @return {string}
+             */
+            function leadingZeros(count, length) {
+                var count_string ='' + count;
+                if (length - count_string.length > 0) {
+                    return ('0'.repeat(length - count_string.length)) + count_string;
+                } else {
+                    return count_string;
+                }
+            }
+
+            /**
+             * Makes an AJAX request to get the log lines, that havent been displayed yet
+             *
+             * Gets the line count of the last message that is being displayed and makes an AJAX request to the server
+             * containing that number and the post id. The server will then return all the lines that came after the
+             * given number. These lines will be appended to the container in the same format as the other ones.
+             * This method calls itself recursively at the end, thus making an infinite loop
+             */
             function loadNewLogs() {
                 // Getting the last count
-                var last_count = jQuery('div.log-meta-wrapper:last-child span').html();
+                var last_count = parseInt(jQuery('div.log-meta-wrapper>p').last().find('span').html());
                 console.log(last_count);
                 var container = jQuery('div.log-meta-wrapper');
-                console.log(container);
+                //console.log(container);
                 jQuery.ajax({
                     url:        ajaxurl,
                     type:       'Get',
-                    timeout:    2,
+                    timeout:    1000,
                     dataType:   'html',
                     async:      true,
                     data:       {
                         'action':   'new_logs',
-                        'count':    last_count
+                        'count':    last_count,
+                        'post': jQuery('#post_ID').val(),
                     },
                     error:      function(response) {
+                        console.log('error');
                         console.log(response);
                     },
                     success:    function(response) {
-                        console.log(response);
+                        //console.log(response);
                         var new_logs = JSON.parse(response.slice(0, -1));
-                        console.log(new_logs);
+                        //console.log(new_logs);
                         var count = last_count + 1;
                         new_logs.forEach(function (log) {
-                            var element = jQuery(String("<p><span style=\"color: dimgrey; font-size: 80%; margin-right: 4px;\">{0}</span>{1}</p>").format(count, log));
-                            console.log(element);
+                            var element = jQuery("<p><span style=\"color: dimgrey; font-size: 80%; margin-right: 4px;\">"+leadingZeros(count, 4)+"</span>"+log+"</p>");
+                            //console.log(element);
                             container.append(element);
                             count += 1;
                         })
                     }
                 });
-                setTimeout(loadNewLogs, 2);
+                setTimeout(loadNewLogs, 1200);
             }
             loadNewLogs();
         </script>
@@ -296,10 +322,10 @@ class LogPostRegistration
         $count_string = (string)$count;
         $length_difference = $length - strlen($count_string);
         if ($length_difference > 0) {
-            return str_repeat('0', $length_difference) + $count_string;
+            return str_repeat('0', $length_difference) . $count_string;
         } else {
             return $count_string;
         }
     }
 
-}
+}}
