@@ -42,3 +42,9 @@ title for the log post can optionally be specified.
 
 - Added the 'menu_icon' to the arguments of the log post type registration 
 
+### 0.0.0.7 - 08.08.2018
+
+- The line numbers in front of every log message, when displayed in the wordpress backend now always consist of 4 
+4 digits with leading zeros.
+- Added AJAX functionality so that LogPost pages in the admin panel load the new log lines without reloading.
+

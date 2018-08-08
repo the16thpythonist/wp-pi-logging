@@ -54,6 +54,9 @@ class LogPostRegistration
      * Removed the deprecated method 'register_taxonomy' from being registered with wordpress, as the log messages are
      * no longer being stored as taxonomy terms.
      *
+     * Changed 08.08.2018
+     * Registering the Ajax method for getting the new logs now
+     *
      * @since 0.0.0.0
      *
      */
@@ -62,6 +65,9 @@ class LogPostRegistration
         add_action('init', array($this, 'register_post_type'));
 
         add_action('add_meta_boxes', array($this, 'register_meta_box'));
+
+        add_action('wp_ajax_new_logs', array($this, 'ajax_new_logs'));
+        add_action('wp_ajax_no_priv_new_logs', array($this, 'ajax_new_logs'));
     }
 
     /**
@@ -161,6 +167,24 @@ class LogPostRegistration
     }
 
     /**
+     * Ajax callback: Returns all the new log lines when called from a LogPost page within the admin panel
+     *
+     * CHANGELOG
+     *
+     * Added 08.08.2018
+     *
+     * @since 0.0.0.7
+     */
+    public function ajax_new_logs() {
+        $count = $_GET['count'];
+        $post_id = $_GET['post'];
+        // Getting all the log entries from the post
+        $logs = get_post_meta($post_id, 'data', false);
+        $new_logs = array_slice($logs, $count, count($logs) - $count);
+        echo json_encode($new_logs);
+    }
+
+    /**
      * The callback to actually display the HTML code for the log post metabox
      *
      * CHANGELOG
@@ -175,6 +199,12 @@ class LogPostRegistration
      * Changed 28.06.2018
      * Added an additional span element before each message, which displays the line number
      *
+     * Changed 08.08.2018 - 0.0.0.7
+     * The line number will now be displayed with leading zeros, so that every number has 3 digits. This is to counter
+     * the bad formatting from having different length line numbers.
+     * Added an additional script element, that schedules a function for every second, which will make an ajax call
+     * to wordpress and get all the log lines, that are new, but are not already displayed and add those to the list
+     *
      * @see LogPostRegistration::getLog() returns all the log messages for the given log post
      *
      * @since 0.0.0.0
@@ -188,10 +218,47 @@ class LogPostRegistration
             $count = 0;
             foreach ($log as $message):
                 ?>
-                <p><span style="color: dimgrey; font-size: 80%; margin-right: 4px;"><?php echo $count; ?></span><?php echo $message; ?></p>
+                <p><span style="color: dimgrey; font-size: 80%; margin-right: 4px;"><?php echo $this->leadingZeros($count); ?></span><?php echo $message; ?></p>
                 <?php $count+= 1; ?>
             <?php endforeach; ?>
         </div>
+        <script>
+            function loadNewLogs() {
+                // Getting the last count
+                var last_count = jQuery('div.log-meta-wrapper:last-child span').html();
+                console.log(last_count);
+                var container = jQuery('div.log-meta-wrapper');
+                console.log(container);
+                jQuery.ajax({
+                    url:        ajaxurl,
+                    type:       'Get',
+                    timeout:    2,
+                    dataType:   'html',
+                    async:      true,
+                    data:       {
+                        'action':   'new_logs',
+                        'count':    last_count
+                    },
+                    error:      function(response) {
+                        console.log(response);
+                    },
+                    success:    function(response) {
+                        console.log(response);
+                        var new_logs = JSON.parse(response.slice(0, -1));
+                        console.log(new_logs);
+                        var count = last_count + 1;
+                        new_logs.forEach(function (log) {
+                            var element = jQuery(String("<p><span style=\"color: dimgrey; font-size: 80%; margin-right: 4px;\">{0}</span>{1}</p>").format(count, log));
+                            console.log(element);
+                            container.append(element);
+                            count += 1;
+                        })
+                    }
+                });
+                setTimeout(loadNewLogs, 2);
+            }
+            loadNewLogs();
+        </script>
     <?php }
 
     public function getDataTaxonomy(): string
@@ -210,6 +277,29 @@ class LogPostRegistration
     private function getLog($post) {
         $post_id = $post->ID;
         return get_post_meta($post_id, 'data', false);
+    }
+
+    /**
+     * Adds leading zeros to a integer to return a string of the integer with the requested length
+     *
+     * CHANGELOG
+     *
+     * Added 08.08.2018
+     *
+     * @since 0.0.0.7
+     *
+     * @param int $count    the number to add the zeros to
+     * @param int $length   the total length to be achieved with the zeros
+     * @return string
+     */
+    private function leadingZeros(int $count, $length=4): string {
+        $count_string = (string)$count;
+        $length_difference = $length - strlen($count_string);
+        if ($length_difference > 0) {
+            return str_repeat('0', $length_difference) + $count_string;
+        } else {
+            return $count_string;
+        }
     }
 
 }
