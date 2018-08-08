@@ -328,4 +328,4 @@ class LogPostRegistration
         }
     }
 
-}}
+}
