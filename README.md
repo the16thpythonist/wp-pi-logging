@@ -48,3 +48,7 @@ title for the log post can optionally be specified.
 4 digits with leading zeros.
 - Added AJAX functionality so that LogPost pages in the admin panel load the new log lines without reloading.
 
+### 0.0.0.8 - 15.08.2018
+
+- Added a new class 'VoidLog', which implements the 'LogInterface': It does nothing. All its methods are just 
+stubs. Log messages passed to those objects will just disappear.
