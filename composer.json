@@ -1,7 +1,16 @@
 {
-  "name":"the16thpythonist/wp-pi-logging",
-  "description":"logging facilities for wordpress",
-  "type":"library",
+  "name": "the16thpythonist/wp-pi-logging",
+  "description": "logging facilities for wordpress",
+  "type": "library",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/the16thpythonist/wp-cpt-lib.git"
+    }
+  ],
+  "require": {
+    "the16thpythonist/wp-cpt-lib": "@dev"
+  },
   "autoload": {
     "psr-4": {
       "Log\\": "src/Log"

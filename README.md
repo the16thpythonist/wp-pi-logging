@@ -52,3 +52,8 @@ title for the log post can optionally be specified.
 
 - Added a new class 'VoidLog', which implements the 'LogInterface': It does nothing. All its methods are just 
 stubs. Log messages passed to those objects will just disappear.
+
+### 0.0.0.9 - 17.10.2018
+
+- Added the package [wp-cpt-lib](https://github.com/the16thpythonist/wp-cpt-lib.git) To the composer requirements. It is 
+essentially a base package for introducing new custom post types in a very object oriented way.
