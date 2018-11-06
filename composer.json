@@ -11,6 +11,11 @@
   "require": {
     "the16thpythonist/wp-cpt-lib": "@dev"
   },
+  "config": {
+    "github-oauth": {
+      "github.com": "81b14a5d35afa6a3a2c0"
+    }
+  },
   "autoload": {
     "psr-4": {
       "Log\\": "src/Log"
